@@ -16,6 +16,17 @@ export default defineComponent({
   },
 
   emits: ['update:count'], 
+  
+  methods: {
+    getCount(event) {
+      const value = this.count + 1;
+      this.$emit('update:count', value);
+    }
+  },
 
-  template: `<button type="button" @click="$emit('update:count', count++)">{{ count }}</button>`,
+  //template: `<button type="button" @click="getCount">{{ count }}</button>`,
+  //template: `<button type="button" @click=getCount($event)>{{ count }}</button>`,
+
+  template: `<button type="button" @click="this.$emit('update:count', this.count + 1)">{{ count }}</button>`,
+
 });
