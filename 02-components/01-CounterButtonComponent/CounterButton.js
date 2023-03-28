@@ -13,16 +13,9 @@ export default defineComponent({
         return value >= 0
       }
     },
-
-    emits: ['update:count'],
-
-    method: {
-      'update:count'(value) {
-        this.$emit('update:count', value)
-      }
-    },
-
   },
 
-  template: `<button type="button">{{ count }}</button>`,
+  emits: ['update:count'], 
+
+  template: `<button type="button" @click="$emit('update:count', count++)">{{ count }}</button>`,
 });
