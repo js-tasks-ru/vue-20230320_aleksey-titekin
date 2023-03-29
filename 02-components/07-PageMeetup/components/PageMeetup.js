@@ -7,6 +7,13 @@ import MeetupView from '../../06-MeetupView/components/MeetupView.js';
 export default defineComponent({
   name: 'PageMeetup',
 
+  data() {
+    return {
+      meetup: null,
+      message: null,
+    }
+  },
+
   props: {
     meetupId: {
       type: Number,
@@ -20,24 +27,27 @@ export default defineComponent({
     MeetupView,
   },
 
-  computed: {
-    meetup() {
-      const value = fetchMeetupById(this.meetupId);
-      return value;
+  watch: {
+    meetupId: {
+      immediate: true,
+      handler() {
+        this.message = "Загрузка...";
+        this.meetup = null;
+        fetchMeetupById(this.meetupId)
+        .then(result => this.meetup = result)
+        .catch(error => this.message = error.message)
+      }
     }
   },
+
 
   template: `
     <div class="page-meetup">
       <!-- meetup view -->
-      <MeetupView :meetup="meetup.result" v-if="meetup.state === 'fulfilled'"/>
+      <MeetupView :meetup="meetup" v-if="meetup !== null"/>
 
-      <UiContainer v-if="meetup.state === 'pending'">
-        <UiAlert>Загрузка...</UiAlert>
-      </UiContainer>
-
-      <UiContainer v-if="meetup.state === 'rejected'">
-        <UiAlert>error</UiAlert>
+      <UiContainer v-else>
+        <UiAlert :text="message"></UiAlert>
       </UiContainer>
     </div>`,
 });
