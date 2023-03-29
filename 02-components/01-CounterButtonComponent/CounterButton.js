@@ -24,9 +24,6 @@ export default defineComponent({
     }
   },
 
-  //template: `<button type="button" @click="getCount">{{ count }}</button>`,
-  //template: `<button type="button" @click=getCount($event)>{{ count }}</button>`,
-
   template: `<button type="button" @click="this.$emit('update:count', this.count + 1)">{{ count }}</button>`,
 
 });
