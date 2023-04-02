@@ -1,14 +1,39 @@
 <template>
-  <div class="form-group">
+  <div class="form-group" :class="[{ classInline: inline }]">
     <!-- form-group_inline -->
-    <label class="form-group__label">label text</label>
+    <UiContainer> 
+      <label class="form-group__label">{{ label }}</label>
     <!-- CONTENT -->
+    </UiContainer>
   </div>
 </template>
 
 <script>
+import UiContainer from './UiContainer';
+
 export default {
   name: 'UiFormGroup',
+
+  data() {
+    return {
+      classInline: 'form-group_inline',
+    }
+  },
+
+  props: {
+    inline: {
+      type: Boolean,
+      default: false,
+    },
+    label: {
+      type: String,      
+    }
+  },
+
+  components: {
+    UiContainer
+  },
+
 };
 </script>
 
