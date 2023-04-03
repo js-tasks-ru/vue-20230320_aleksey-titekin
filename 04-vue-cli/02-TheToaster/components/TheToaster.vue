@@ -1,51 +1,38 @@
 <template>
-  <div class="toasts">
-    <div :class="{'toast toast_success': isSuccess, 'toast toast_error': isError}">
-      <UiIcon class="toast__icon" :icon="isSuccess ? 'check-circle' : 'alert-circle'" />
-      <span>{{ message }}</span>
+  
+    <div class="toasts">
+      <UiToast v-for="toast in toastsArr" :styleToast="toast.styleToast" :message="toast.message" />
     </div>
-<!--
-    <div class="toast toast_error">
-      <UiIcon class="toast__icon" icon="alert-circle" />
-      <span>Error Toast Example</span>
-    </div>
--->    
-  </div>
+
 </template>
 
 <script>
-import UiIcon from './UiIcon.vue';
+import UiToast from './UiToast.vue';
 
 export default {
   name: 'TheToaster',
 
   data() {
     return {
-      message: String,
-      isSuccess: {
-        type: Boolean,
-        default: false,
-      },
-      isError: {
-        type: Boolean,
-        default: false,
-      }
+      toastsArr: new Array,
     }
   },
 
-  components: { UiIcon },
+  components: { UiToast },
 
   methods: {
     success(message) {
-      this.isSuccess = true;
-      this.isError = false;
-      this.message = message;
+      const toast = {};
+      toast.styleToast = 'success';
+      toast.message = message;
+      this.toastsArr.push(toast)      
     },
 
     error(message) {
-      this.isSuccess = false;
-      this.isError = true;
-      this.message = message;
+      const toast = {};
+      toast.styleToast = 'error';
+      toast.message = message;
+      this.toastsArr.push(toast)   
     }
 
   }
@@ -69,35 +56,5 @@ export default {
     bottom: 72px;
     right: 112px;
   }
-}
-
-.toast {
-  display: flex;
-  flex: 0 0 auto;
-  flex-direction: row;
-  align-items: center;
-  padding: 16px;
-  background: #ffffff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-  border-radius: 4px;
-  font-size: 18px;
-  line-height: 28px;
-  width: auto;
-}
-
-.toast + .toast {
-  margin-top: 20px;
-}
-
-.toast__icon {
-  margin-right: 12px;
-}
-
-.toast.toast_success {
-  color: var(--green);
-}
-
-.toast.toast_error {
-  color: var(--red);
 }
 </style>
