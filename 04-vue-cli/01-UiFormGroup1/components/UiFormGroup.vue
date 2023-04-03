@@ -1,24 +1,15 @@
 <template>
-  <div class="form-group" :class="[{ classInline: inline }]">
+  <div class="form-group" :class="[{ 'form-group_inline': inline }]">
     <!-- form-group_inline -->
-    <UiContainer> 
-      <label class="form-group__label">{{ label }}</label>
+      <label class="form-group__label" v-if="label">{{ label }}</label>
     <!-- CONTENT -->
-    </UiContainer>
+      <slot></slot>
   </div>
 </template>
 
 <script>
-import UiContainer from './UiContainer';
-
 export default {
   name: 'UiFormGroup',
-
-  data() {
-    return {
-      classInline: 'form-group_inline',
-    }
-  },
 
   props: {
     inline: {
@@ -29,11 +20,6 @@ export default {
       type: String,      
     }
   },
-
-  components: {
-    UiContainer
-  },
-
 };
 </script>
 
