@@ -1,14 +1,15 @@
 <template>
   <div class="toasts">
-    <div class="toast toast_success">
-      <UiIcon class="toast__icon" icon="check-circle" />
-      <span>Success Toast Example</span>
+    <div :class="{'toast toast_success': isSuccess, 'toast toast_error': isError}">
+      <UiIcon class="toast__icon" :icon="isSuccess ? 'check-circle' : 'alert-circle'" />
+      <span>{{ message }}</span>
     </div>
-
+<!--
     <div class="toast toast_error">
       <UiIcon class="toast__icon" icon="alert-circle" />
       <span>Error Toast Example</span>
     </div>
+-->    
   </div>
 </template>
 
@@ -18,7 +19,36 @@ import UiIcon from './UiIcon.vue';
 export default {
   name: 'TheToaster',
 
+  data() {
+    return {
+      message: String,
+      isSuccess: {
+        type: Boolean,
+        default: false,
+      },
+      isError: {
+        type: Boolean,
+        default: false,
+      }
+    }
+  },
+
   components: { UiIcon },
+
+  methods: {
+    success(message) {
+      this.isSuccess = true;
+      this.isError = false;
+      this.message = message;
+    },
+
+    error(message) {
+      this.isSuccess = false;
+      this.isError = true;
+      this.message = message;
+    }
+
+  }
 };
 </script>
 
