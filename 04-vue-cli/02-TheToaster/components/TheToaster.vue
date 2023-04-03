@@ -1,7 +1,7 @@
 <template>
   
     <div class="toasts">
-      <UiToast v-for="toast in toastsArr" :styleToast="toast.styleToast" :message="toast.message" />
+      <UiToast v-for="toast in toastsArr" :key="toast.id" :styleToast="toast.styleToast" :message="toast.message" />
     </div>
 
 </template>
@@ -21,22 +21,31 @@ export default {
   components: { UiToast },
 
   methods: {
-    success(message) {
+    success(message, timeout = 5000 ) {
       const toast = {};
+      toast.id = Date.now();
       toast.styleToast = 'success';
       toast.message = message;
-      this.toastsArr.push(toast)      
+      this.toastsArr.push(toast);
+      setTimeout(this.removeToast,timeout,toast.id);      
     },
 
-    error(message) {
+    error(message, timeout = 5000) {
       const toast = {};
+      toast.id = Date.now();
       toast.styleToast = 'error';
       toast.message = message;
-      this.toastsArr.push(toast)   
-    }
+      this.toastsArr.push(toast);
+      setTimeout(this.removeToast,timeout,toast.id);  
+    },
+
+    removeToast(id) {
+      let i = this.toastsArr.findIndex(toast => toast.id === id);
+      this.toastsArr.splice(i, 1);
+    },
 
   }
-};
+}
 </script>
 
 <style scoped>

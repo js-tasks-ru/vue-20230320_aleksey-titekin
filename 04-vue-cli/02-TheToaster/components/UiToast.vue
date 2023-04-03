@@ -2,13 +2,7 @@
   <div :class="{'toast toast_success': isSuccess, 'toast toast_error': isError}">
     <UiIcon class="toast__icon" :icon="isSuccess ? 'check-circle' : 'alert-circle'" />
     <span>{{ message }}</span>
-  </div>
-<!--
-   <div class="toast toast_error">
-     <UiIcon class="toast__icon" icon="alert-circle" />
-     <span>Error Toast Example</span>
-   </div>
--->    
+  </div>    
 </template>
 
 <script>
