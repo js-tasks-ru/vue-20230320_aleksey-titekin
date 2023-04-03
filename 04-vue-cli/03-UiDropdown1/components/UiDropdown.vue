@@ -2,17 +2,13 @@
   <div class="dropdown dropdown_opened">
     <button type="button" class="dropdown__toggle dropdown__toggle_icon">
       <UiIcon icon="tv" class="dropdown__icon" />
-      <span>Title</span>
+      <span>{{ title }}</span>
     </button>
 
     <div class="dropdown__menu" role="listbox">
-      <button class="dropdown__item dropdown__item_icon" role="option" type="button">
-        <UiIcon icon="tv" class="dropdown__icon" />
-        Option 1
-      </button>
-      <button class="dropdown__item dropdown__item_icon" role="option" type="button">
-        <UiIcon icon="tv" class="dropdown__icon" />
-        Option 2
+      <button v-for="elem is options" class="dropdown__item dropdown__item_icon" role="option" type="button">
+        <UiIcon :icon="elem.icon" class="dropdown__icon" />
+        {{ elem.text }}
       </button>
     </div>
   </div>
@@ -23,6 +19,20 @@ import UiIcon from './UiIcon.vue';
 
 export default {
   name: 'UiDropdown',
+
+  props: {
+    options: {
+      type: Array,
+      required: true,
+    },
+    modelValue: {
+      type: String,
+    },
+    title: {
+      type: String,
+      required: true,
+    }
+  },
 
   components: { UiIcon },
 };
