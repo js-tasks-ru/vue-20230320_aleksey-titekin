@@ -1,16 +1,17 @@
 <template>
-  <div class="dropdown dropdown_opened">
-    <button type="button" class="dropdown__toggle dropdown__toggle_icon">
-      <UiIcon icon="tv" class="dropdown__icon" />
-      <span>{{ title }}</span>
+  <div class="dropdown" :class="{'dropdown_opened': opened}">
+    <button type="button" class="dropdown__toggle"  :class="{'dropdown__toggle_icon': isIcons}"  @click="onClick">
+      <UiIcon icon="tv" class="dropdown__icon" v-if="isIcons"/>
+      <span> {{ value }} </span>
     </button>
 
-    <div class="dropdown__menu" role="listbox">
-      <button v-for="elem is options" class="dropdown__item dropdown__item_icon" role="option" type="button">
-        <UiIcon :icon="elem.icon" class="dropdown__icon" />
-        {{ elem.text }}
+    <div class="dropdown__menu" role="listbox" v-show="opened">
+      <button v-for="item in options" class="dropdown__item" :class="{'dropdown__item_icon': isIcons}" role="option" type="button" @click="onSelect(item.value)">
+        <UiIcon :icon="item.icon" class="dropdown__icon" v-if="isIcons" />
+        {{ item.text }}
       </button>
     </div>
+    
   </div>
 </template>
 
@@ -20,13 +21,17 @@ import UiIcon from './UiIcon.vue';
 export default {
   name: 'UiDropdown',
 
+  data() {
+    return {
+      opened : false,
+    }
+  },
+
   props: {
+    modelValue : String,
     options: {
       type: Array,
       required: true,
-    },
-    modelValue: {
-      type: String,
     },
     title: {
       type: String,
@@ -34,7 +39,34 @@ export default {
     }
   },
 
+  emits: ['update:modelValue'],
+
   components: { UiIcon },
+
+  methods: {
+    onClick() {
+      this.opened = !this.opened;
+    },
+
+    onSelect(value) {
+      this.opened = false;
+      this.value = value; 
+    }
+  },
+
+  computed: {
+    isIcons() {
+      return this.options.map(item => "icon" in item).includes(true);
+    },
+    value: {
+      get() {
+        return this.options.find(item => item.value = this.modelValue).text;        
+      },
+      set(value) {
+        this.$emit('update:modelValue',value)
+      }
+    }
+  }
 };
 </script>
 
