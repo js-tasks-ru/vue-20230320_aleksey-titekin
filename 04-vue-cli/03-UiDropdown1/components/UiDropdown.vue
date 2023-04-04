@@ -1,8 +1,8 @@
 <template>
   <div class="dropdown" :class="{'dropdown_opened': opened}">
     <button type="button" class="dropdown__toggle"  :class="{'dropdown__toggle_icon': isIcons}"  @click="onClick">
-      <UiIcon icon="tv" class="dropdown__icon" v-if="isIcons"/>
-      <span> {{ value }} </span>
+      <UiIcon :icon="currentElem.icon" class="dropdown__icon" v-if="isIcons"/>
+      <span> {{ currentElem.text }} </span>
     </button>
 
     <div class="dropdown__menu" role="listbox" v-show="opened">
@@ -59,12 +59,16 @@ export default {
       return this.options.map(item => "icon" in item).includes(true);
     },
     value: {
-      get() {
-        return this.options.find(item => item.value = this.modelValue).text;        
+      get() {        
+        return this.modelValue;
       },
       set(value) {
         this.$emit('update:modelValue',value)
       }
+    },
+    currentElem() {
+      let elem = this.options.find(item => item.value === this.value);
+      return elem ? elem : {text: this.title};
     }
   }
 };
