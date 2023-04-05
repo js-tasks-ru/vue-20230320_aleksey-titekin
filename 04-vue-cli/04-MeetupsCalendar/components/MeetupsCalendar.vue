@@ -25,14 +25,13 @@ export default {
 
   data() {
     return {
-      currentMonth: new Date(),
+      currentMonth: Date,
     }
   },
 
   created() {
-    //const date = new Date();
-
-    this.currentMonth = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth(), 1);
+    const date = new Date();
+    this.currentMonth = new Date(date.getFullYear(), date.getMonth(), 1);
   },
 
   props: {
@@ -52,32 +51,32 @@ export default {
 
     arrayDays() {
       const arrDays = [];
-      let id = new Date();
-      let date = new Date(this.currentMonth);
-      const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-      const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+      let id = 0;
+      
+      const firstDay = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth(), 1);
+      const lastDay = new Date(firstDay.getFullYear(), firstDay.getMonth() + 1, 0);
 
+      let date = new Date(firstDay);
+      
+      while (date <= lastDay) {
+        id++;
+        arrDays.push({'id':id, 'day': date.getDate(), 'date': Date.parse(date), 'isCurrentMonth': true});
+        date.setDate(date.getDate() + 1);
+      }
+
+      while (date.getDay() != 1 ) {
+        id++;
+        arrDays.push({'id':id, 'day': date.getDate(), 'date': Date.parse(date), 'isCurrentMonth': false});
+        date.setDate(date.getDate() + 1);
+      }
+ 
       date = new Date(firstDay);
-      arrDays.push({'id':id, 'day':date.getDate(), 'date':date, 'isCurrentMonth': true});
-      while(date < lastDay) {
-        id = new Date();
-        date = new Date(date.setDate(date.getDate() + 1));
-        arrDays.push({'id':id, 'day':date.getDate(), 'date':date, 'isCurrentMonth': true});
+      while (date.getDay() != 1 ) {
+        id++;
+        date.setDate(date.getDate() - 1); 
+        arrDays.unshift({'id':id, 'day': date.getDate(), 'date': Date.parse(date), 'isCurrentMonth': false});
       }
-
-      date = new Date(firstDay)
-      while (date.getDay() != 1) {
-        id = new Date();
-        date = new Date(date.setDate(date.getDate() - 1));
-        arrDays.unshift({'id':id, 'day':date.getDate(), 'date':date, 'isCurrentMonth': false});
-      }
-
-      date = new Date(lastDay) 
-      while (date.getDay() != 0) {
-        id = new Date();
-        date = new Date(date.setDate(date.getDate() + 1));
-        arrDays.push({'id':id, 'day':date.getDate(), 'date':date, 'isCurrentMonth': false});
-      }
+  
       return arrDays;
     },
   },
@@ -92,11 +91,13 @@ export default {
     },
 
     currentDayMeetups(date) {
+      const currentDate = new Date(date);
       const result = this.meetups.filter(item => {
         const meetDate = new Date(item.date);
-        return (meetDate.getDate() === date.getDate()) 
-          && (meetDate.getMonth() === date.getMonth())
-          && (meetDate.getFullYear() === date.getFullYear());
+//        return item.date === date
+        return (meetDate.getDate() === currentDate.getDate()) 
+          && (meetDate.getMonth() === currentDate.getMonth())
+          && (meetDate.getFullYear() === currentDate.getFullYear());
       });
       return result;
     },
