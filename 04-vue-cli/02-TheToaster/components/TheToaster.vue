@@ -1,25 +1,59 @@
 <template>
-  <div class="toasts">
-    <div class="toast toast_success">
-      <UiIcon class="toast__icon" icon="check-circle" />
-      <span>Success Toast Example</span>
+  
+    <div class="toasts" >
+      <UiToast v-for="[key,toast] in toastsMap" :key="key" :styleToast="toast.styleToast" :message="toast.message" />
     </div>
 
-    <div class="toast toast_error">
-      <UiIcon class="toast__icon" icon="alert-circle" />
-      <span>Error Toast Example</span>
-    </div>
-  </div>
 </template>
 
 <script>
-import UiIcon from './UiIcon.vue';
+import UiToast from './UiToast.vue';
 
 export default {
   name: 'TheToaster',
 
-  components: { UiIcon },
-};
+  data() {
+    return {
+      toastsMap: new Map(),
+      id: 0,
+    }
+  },
+
+  components: { UiToast },
+
+  methods: {
+    success(message) {
+      this.сreateToast('success', message, 5000);
+    },
+
+    error(message) {
+      this.сreateToast('error', message, 5000);
+    },
+
+    getNewID() {
+      if (this.toastsMap.length != 0) {
+        this.id++
+      } else {
+        this.id = 1
+      }
+      return this.id;
+    },
+
+    сreateToast(style, message, timeout) {
+      const toast = {};
+      const id = this.getNewID();
+      toast.styleToast = style;
+      toast.message = message;
+      this.toastsMap.set(id,toast);
+      setTimeout(this.removeToast,timeout,id);  
+    },
+
+    removeToast(id) {
+      this.toastsMap.delete(id);
+    },
+
+  }
+}
 </script>
 
 <style scoped>
@@ -39,35 +73,5 @@ export default {
     bottom: 72px;
     right: 112px;
   }
-}
-
-.toast {
-  display: flex;
-  flex: 0 0 auto;
-  flex-direction: row;
-  align-items: center;
-  padding: 16px;
-  background: #ffffff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-  border-radius: 4px;
-  font-size: 18px;
-  line-height: 28px;
-  width: auto;
-}
-
-.toast + .toast {
-  margin-top: 20px;
-}
-
-.toast__icon {
-  margin-right: 12px;
-}
-
-.toast.toast_success {
-  color: var(--green);
-}
-
-.toast.toast_error {
-  color: var(--red);
 }
 </style>

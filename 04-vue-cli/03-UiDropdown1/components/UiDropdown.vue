@@ -1,20 +1,17 @@
 <template>
-  <div class="dropdown dropdown_opened">
-    <button type="button" class="dropdown__toggle dropdown__toggle_icon">
-      <UiIcon icon="tv" class="dropdown__icon" />
-      <span>Title</span>
+  <div class="dropdown" :class="{'dropdown_opened': opened}">
+    <button type="button" class="dropdown__toggle"  :class="{'dropdown__toggle_icon': isIcons}"  @click="onClick">
+      <UiIcon :icon="currentElem.icon" class="dropdown__icon" v-if="isIcons && currentElem.icon"/>
+      <span> {{ currentElem.text }} </span>
     </button>
 
-    <div class="dropdown__menu" role="listbox">
-      <button class="dropdown__item dropdown__item_icon" role="option" type="button">
-        <UiIcon icon="tv" class="dropdown__icon" />
-        Option 1
-      </button>
-      <button class="dropdown__item dropdown__item_icon" role="option" type="button">
-        <UiIcon icon="tv" class="dropdown__icon" />
-        Option 2
+    <div class="dropdown__menu" role="listbox" v-show="opened">
+      <button v-for="item in options" class="dropdown__item" :class="{'dropdown__item_icon': isIcons}" role="option" type="button" @click="onSelect(item.value)">
+        <UiIcon :icon="item.icon" class="dropdown__icon" v-if="isIcons && item.icon" />
+        {{ item.text }}
       </button>
     </div>
+    
   </div>
 </template>
 
@@ -24,7 +21,56 @@ import UiIcon from './UiIcon.vue';
 export default {
   name: 'UiDropdown',
 
+  data() {
+    return {
+      opened : false,
+    }
+  },
+
+  props: {
+    modelValue : String,
+    options: {
+      type: Array,
+      required: true,
+    },
+    title: {
+      type: String,
+      required: true,
+    }
+  },
+
+  emits: ['update:modelValue'],
+
   components: { UiIcon },
+
+  methods: {
+    onClick() {
+      this.opened = !this.opened;
+    },
+
+    onSelect(value) {
+      this.opened = false;
+      this.value = value; 
+    }
+  },
+
+  computed: {
+    isIcons() {
+      return this.options.some(item => "icon" in item);
+    },
+    value: {
+      get() {        
+        return this.modelValue;
+      },
+      set(value) {
+        this.$emit('update:modelValue',value)
+      }
+    },
+    currentElem() {
+      let elem = this.options.find(item => item.value === this.value);
+      return elem ? elem : {text: this.title};
+    }
+  }
 };
 </script>
 
