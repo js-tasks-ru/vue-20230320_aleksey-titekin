@@ -1,13 +1,13 @@
 <template>
   <div class="dropdown" :class="{'dropdown_opened': opened}">
     <button type="button" class="dropdown__toggle"  :class="{'dropdown__toggle_icon': isIcons}"  @click="onClick">
-      <UiIcon :icon="currentElem.icon" class="dropdown__icon" v-if="isIcons"/>
+      <UiIcon :icon="currentElem.icon" class="dropdown__icon" v-if="isIcons && currentElem.icon"/>
       <span> {{ currentElem.text }} </span>
     </button>
 
     <div class="dropdown__menu" role="listbox" v-show="opened">
       <button v-for="item in options" class="dropdown__item" :class="{'dropdown__item_icon': isIcons}" role="option" type="button" @click="onSelect(item.value)">
-        <UiIcon :icon="item.icon" class="dropdown__icon" v-if="isIcons" />
+        <UiIcon :icon="item.icon" class="dropdown__icon" v-if="isIcons && item.icon" />
         {{ item.text }}
       </button>
     </div>
@@ -56,7 +56,7 @@ export default {
 
   computed: {
     isIcons() {
-      return this.options.map(item => "icon" in item).includes(true);
+      return this.options.some(item => "icon" in item);
     },
     value: {
       get() {        

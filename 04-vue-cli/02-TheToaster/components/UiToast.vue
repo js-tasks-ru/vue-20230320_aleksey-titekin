@@ -1,5 +1,5 @@
 <template>
-  <div :class="{'toast toast_success': isSuccess, 'toast toast_error': isError}">
+  <div class="toast" :class="{'toast_success': isSuccess, 'toast_error': isError}">
     <UiIcon class="toast__icon" :icon="isSuccess ? 'check-circle' : 'alert-circle'" />
     <span>{{ message }}</span>
   </div>    

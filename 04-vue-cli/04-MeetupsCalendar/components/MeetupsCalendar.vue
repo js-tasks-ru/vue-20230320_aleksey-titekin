@@ -12,7 +12,7 @@
       <div  v-for="day in arrayDays" :key="day.id" class="calendar-view__cell" :class="{'calendar-view__cell_inactive': !day.isCurrentMonth}" tabindex="0">
         <div class="calendar-view__cell-day">{{ day.day }}</div>
         <div class="calendar-view__cell-content">
-          <a v-for="meetup in currentDayMeetups(day.date)" :key="meetup.id" href="/meetups/1" class="calendar-event">{{ meetup.title }}</a> 
+          <a v-for="meetup in day.meetups" :key="meetup.id" href="/meetups/1" class="calendar-event">{{ meetup.title }}</a> 
         </div>
       </div>
     </div>    
@@ -25,7 +25,7 @@ export default {
 
   data() {
     return {
-      currentMonth: Date,
+      currentMonth: new Date(),
     }
   },
 
@@ -60,13 +60,25 @@ export default {
       
       while (date <= lastDay) {
         id++;
-        arrDays.push({'id':id, 'day': date.getDate(), 'date': Date.parse(date), 'isCurrentMonth': true});
+        arrDays.push({
+          'id':id, 
+          'day': date.getDate(), 
+          'date': Date.parse(date), 
+          'isCurrentMonth': true, 
+          'meetups': this.currentDayMeetups(date),
+        });
         date.setDate(date.getDate() + 1);
       }
 
       while (date.getDay() != 1 ) {
         id++;
-        arrDays.push({'id':id, 'day': date.getDate(), 'date': Date.parse(date), 'isCurrentMonth': false});
+        arrDays.push({
+          'id':id, 
+          'day': date.getDate(), 
+          'date': Date.parse(date), 
+          'isCurrentMonth': false,
+          'meetups': [],
+        });
         date.setDate(date.getDate() + 1);
       }
  
@@ -74,7 +86,13 @@ export default {
       while (date.getDay() != 1 ) {
         id++;
         date.setDate(date.getDate() - 1); 
-        arrDays.unshift({'id':id, 'day': date.getDate(), 'date': Date.parse(date), 'isCurrentMonth': false});
+        arrDays.unshift({
+          'id':id, 
+          'day': date.getDate(), 
+          'date': Date.parse(date), 
+          'isCurrentMonth': false,
+          'meetups': [],
+        });
       }
   
       return arrDays;
@@ -91,13 +109,11 @@ export default {
     },
 
     currentDayMeetups(date) {
-      const currentDate = new Date(date);
       const result = this.meetups.filter(item => {
         const meetDate = new Date(item.date);
-//        return item.date === date
-        return (meetDate.getDate() === currentDate.getDate()) 
-          && (meetDate.getMonth() === currentDate.getMonth())
-          && (meetDate.getFullYear() === currentDate.getFullYear());
+        return (meetDate.getDate() === date.getDate()) 
+          && (meetDate.getMonth() === date.getMonth())
+          && (meetDate.getFullYear() === date.getFullYear());
       });
       return result;
     },

@@ -1,9 +1,6 @@
 <template>
   
-    <div class="toasts" v-if="isArray">
-      <UiToast v-for="toast in toastsArr" :key="toast.id" :styleToast="toast.styleToast" :message="toast.message" />
-    </div>  
-    <div class="toasts" v-if="!isArray">
+    <div class="toasts" >
       <UiToast v-for="[key,toast] in toastsMap" :key="key" :styleToast="toast.styleToast" :message="toast.message" />
     </div>
 
@@ -18,8 +15,7 @@ export default {
   data() {
     return {
       toastsMap: new Map(),
-      toastsArr: new Array,
-      isArray: true,
+      id: 0,
     }
   },
 
@@ -34,22 +30,26 @@ export default {
       this.сreateToast('error', message, 5000);
     },
 
+    getNewID() {
+      if (this.toastsMap.length != 0) {
+        this.id++
+      } else {
+        this.id = 1
+      }
+      return this.id;
+    },
+
     сreateToast(style, message, timeout) {
       const toast = {};
-      const id = Date.now();
-      toast.id = id;
+      const id = this.getNewID();
       toast.styleToast = style;
       toast.message = message;
       this.toastsMap.set(id,toast);
-      this.toastsArr.push(toast);
       setTimeout(this.removeToast,timeout,id);  
     },
 
     removeToast(id) {
       this.toastsMap.delete(id);
-
-      const pos = this.toastsArr.findIndex(toast => toast.id = id);
-      this.toastsArr.splice(pos,1);
     },
 
   }
