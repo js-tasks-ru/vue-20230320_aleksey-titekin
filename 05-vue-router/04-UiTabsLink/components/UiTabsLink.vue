@@ -1,10 +1,19 @@
 <template>
-  <a class="tabs__tab tabs__tab_active" role="tab">Tab</a>
+  <RouterLink  class="tabs__tab" exactActiveClass="tabs__tab_active" role="tab">
+    <slot />
+  </RouterLink>
 </template>
 
 <script>
 export default {
   name: 'UiTabsLink',
+
+  computed: {
+    isActive() {
+      return true;
+    }
+  },
+
 };
 </script>
 
