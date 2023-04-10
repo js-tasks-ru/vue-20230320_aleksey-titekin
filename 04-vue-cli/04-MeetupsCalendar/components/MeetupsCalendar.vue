@@ -26,12 +26,23 @@ export default {
   data() {
     return {
       currentMonth: new Date(),
+      meetupsMonth: [],
     }
   },
 
   created() {
     const date = new Date();
     this.currentMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+  },
+
+  watch: {
+    currentMonth(oldDate, newDate) {
+      this.meetupsMonth = this.meetups.filter(item => {
+        const meetDate = new Date(item.date);
+        return (meetDate.getMonth() === newDate.getMonth())
+          && (meetDate.getFullYear() === newDate.getFullYear())
+      })
+    }
   },
 
   props: {
@@ -97,9 +108,11 @@ export default {
   
       return arrDays;
     },
+
   },
 
   methods: {
+
     onClickPrevMonth() {
       this.currentMonth = new Date(this.currentMonth.setMonth( this.currentMonth.getMonth() - 1));
     },
@@ -109,11 +122,9 @@ export default {
     },
 
     currentDayMeetups(date) {
-      const result = this.meetups.filter(item => {
+      const result = this.meetupsMonth.filter(item => {
         const meetDate = new Date(item.date);
-        return (meetDate.getDate() === date.getDate()) 
-          && (meetDate.getMonth() === date.getMonth())
-          && (meetDate.getFullYear() === date.getFullYear());
+        return (meetDate.getDate() === date.getDate());
       });
       return result;
     },
