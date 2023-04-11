@@ -1,20 +1,45 @@
 <template>
   <div class="input-group input-group_icon input-group_icon-left input-group_icon-right">
     <div class="input-group__icon">
-      <img class="icon" alt="icon" />
+      <slot name="left-icon" class="icon" alt="icon" />
     </div>
 
-    <input ref="input" class="form-control form-control_rounded form-control_sm" />
+    <component 
+      :is="styleView" 
+      ref="input" 
+      class="form-control"
+      :class="{ 'form-control_rounded': isRounded, 'form-control_sm': isSmall }" 
+      v-bind="$attrs" 
+      :value="value"
+      >
+      <slot />
+    </component>
 
     <div class="input-group__icon">
-      <img class="icon" alt="icon" />
+      <slot name="right-icon" class="icon" alt="icon" />
     </div>
   </div>
 </template>
 
 <script>
-export default {
+export default {  
   name: 'UiInput',
+
+  inheritAttrs: false,
+
+  computed: {
+    isSmall() {
+      return 'small' in this.$attrs
+    },
+
+    isRounded() {
+      return 'rounded' in this.$attrs
+    },
+
+    styleView() {
+      return 'multiline' in this.$attrs ? 'textarea' : 'input'
+    }
+  }
 };
 </script>
 
