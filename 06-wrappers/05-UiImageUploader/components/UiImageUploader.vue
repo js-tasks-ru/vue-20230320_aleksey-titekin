@@ -1,53 +1,100 @@
 <template>
   <div class="image-uploader">
-    <label class="image-uploader__preview image-uploader__preview-loading" style="--bg-url: url('/link.jpeg')">
-      <span class="image-uploader__text">Загрузить изображение</span>
-      <input type="file" accept="image/*" class="image-uploader__input" v-bind="$attrs"
-      @change="myFunc($event.target.files[0])"/>
+    <label class="image-uploader__preview" :class="{ 'image-uploader__preview-loading': isLoading }" :style="imageLink">
+      <span class="image-uploader__text">{{ status }}</span>
+      <input type="file" accept="image/*" class="image-uploader__input" ref="inputFile" v-bind="$attrs"
+        @change="loadImage($event.target.files[0])" @click="removeImage($event)" />
     </label>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'UiImageUploader', 
+  name: 'UiImageUploader',
 
   data() {
     return {
-      fileName: String,
+      image : null,
+      isLoading: false,
+      status: this.baseStatus(),
     }
   },
 
   inheritAttrs: false,
 
   props: {
-    preview: String,
+    preview: {
+      type: String,
+      default: null,
+    },
     uploader: Function,
   },
 
-  emits: ['select','remove','error','upload'],
+  emits: ['select', 'remove', 'error', 'upload'],
 
   computed: {
-    status() {
-      return 'Загрузить изображение'
+
+    imageLink() {
+      const link = this.image ? this.image : this.preview;
+      return link != null ? `--bg-url: url(${link})` : null;
+    },
+  },
+
+  watch: {
+    image() {
+      this.status = this.baseStatus();
+    },
+
+    preview() {
+      this.image = this.preview;
+    },
+
+    isLoading(newValue) {
+      this.status = newValue ? 'Загрузка...' : this.baseStatus();
     }
   },
 
+methods: {
+    baseStatus() {
+      return this.image ? 'Удалить изображение' : 'Загрузить изображение';
+    },
 
-  methods: {
-    async myFunc(file) {
-      this.$emit('select',file);
-      console.log('file', file);
-      return await this.uploader(file);
+    async loadImage(file) {
+    if (this.isLoading) return;
+    this.$emit('select', file);
+    try {
+      this.isLoading = true;
+      if (this.uploader) {
+        const result = await this.uploader(file);
+        this.image = result.image;
+        this.$emit('upload', result);
+      } else {
+        this.image = URL.createObjectURL(file);
+      }
+    } catch (err) {
+      this.$emit('error', err);
+      this.$refs.inputFile.value = null;
+    }
+    this.isLoading = false;
+  },
+
+  removeImage(event) {
+    if (this.isLoading) return;
+    if (this.image != null) {
+      event.preventDefault();
+      this.$emit('remove');
+      this.image = null;
+      this.$refs.inputFile.value = null;
     }
   }
+
+}
 
 };
 </script>
 
 <style scoped>
-.image-uploader {
-}
+.image-uploader {}
 
 .image-uploader__input {
   opacity: 0;
