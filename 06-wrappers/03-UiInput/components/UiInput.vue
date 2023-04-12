@@ -8,8 +8,9 @@
       <slot name="left-icon" class="icon" alt="icon" />
     </div>
 
-    <component :is="typeComponent" v-bind="$attrs" :value="modelValue" @input="$emit('update:modelValue', $event.target.value)"
-      ref="input" class="form-control" :class="{ 'form-control_rounded': rounded, 'form-control_sm': small }" />
+    <component :is="typeComponent" v-bind="$attrs" :value="modelValue"
+      @input="$emit('update:modelValue', $event.target.value)" ref="input" class="form-control"
+      :class="{ 'form-control_rounded': rounded, 'form-control_sm': small }" />
 
     <div v-if="$slots['right-icon']" class="input-group__icon">
       <slot name="right-icon" class="icon" alt="icon" />
@@ -29,7 +30,8 @@ export default {
     rounded: Boolean,
     multiline: {
       type: Boolean,
-      default: false}
+      default: false
+    }
   },
 
   emits: ['update:modelValue'],

@@ -2,14 +2,46 @@
   <div class="image-uploader">
     <label class="image-uploader__preview image-uploader__preview-loading" style="--bg-url: url('/link.jpeg')">
       <span class="image-uploader__text">Загрузить изображение</span>
-      <input type="file" accept="image/*" class="image-uploader__input" />
+      <input type="file" accept="image/*" class="image-uploader__input" v-bind="$attrs"
+      @change="myFunc($event.target.files[0])"/>
     </label>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'UiImageUploader',
+  name: 'UiImageUploader', 
+
+  data() {
+    return {
+      fileName: String,
+    }
+  },
+
+  inheritAttrs: false,
+
+  props: {
+    preview: String,
+    uploader: Function,
+  },
+
+  emits: ['select','remove','error','upload'],
+
+  computed: {
+    status() {
+      return 'Загрузить изображение'
+    }
+  },
+
+
+  methods: {
+    async myFunc(file) {
+      this.$emit('select',file);
+      console.log('file', file);
+      return await this.uploader(file);
+    }
+  }
+
 };
 </script>
 
