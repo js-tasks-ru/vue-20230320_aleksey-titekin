@@ -19,9 +19,12 @@
         'form-control_rounded': rounded,
         'form-control_sm': small,
       }"
+      :type="type"
+      :step="valueStep"
       v-bind="$attrs"
       :value="modelValue"
       @[updateEvent]="$emit('update:modelValue', $event.target.value)"
+   
     />
 
     <div v-if="$slots['right-icon']" class="input-group__icon">
@@ -36,8 +39,17 @@ export default {
   inheritAttrs: false,
 
   props: {
-    modelValue: {
+    type: {
       type: String,
+      default: 'date',
+    },
+
+    step: {
+      type: Number,
+    },
+
+    modelValue: {
+      type: String
     },
 
     modelModifiers: {

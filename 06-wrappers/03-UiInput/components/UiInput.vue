@@ -42,15 +42,6 @@ export default {
     typeComponent() {
       return this.multiline ? 'textarea' : 'input'
     },
-
-    modelValueProxy: {
-      get() {
-        return this.modelValue;
-      },
-      set(value) {
-        this.$emit('update:modelValue', value);
-      }
-    },
   },
 
   methods: {
