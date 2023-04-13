@@ -14,9 +14,8 @@ export default {
 
   data() {
     return {
-      image : null,
+      image: this.preview,
       isLoading: false,
-      status: this.baseStatus(),
     }
   },
 
@@ -33,62 +32,47 @@ export default {
   emits: ['select', 'remove', 'error', 'upload'],
 
   computed: {
-
     imageLink() {
-      const link = this.image ? this.image : this.preview;
-      return link != null ? `--bg-url: url(${link})` : null;
+      return this.image ? `--bg-url: url(${this.image})` : null;
+    },
+
+    status() {
+      let result = this.isLoading ? 'Загрузка...' : this.image ? 'Удалить изображение' : 'Загрузить изображение';
+      return result
     },
   },
 
-  watch: {
-    image() {
-      this.status = this.baseStatus();
-    },
-
-    preview() {
-      this.image = this.preview;
-    },
-
-    isLoading(newValue) {
-      this.status = newValue ? 'Загрузка...' : this.baseStatus();
-    }
-  },
-
-methods: {
-    baseStatus() {
-      return this.image ? 'Удалить изображение' : 'Загрузить изображение';
-    },
-
+  methods: {
     async loadImage(file) {
-    if (this.isLoading) return;
-    this.$emit('select', file);
-    try {
-      this.isLoading = true;
-      if (this.uploader) {
-        const result = await this.uploader(file);
-        this.image = result.image;
-        this.$emit('upload', result);
-      } else {
-        this.image = URL.createObjectURL(file);
+      if (this.isLoading) return;
+      this.$emit('select', file);
+      try {
+        this.isLoading = true;
+        if (this.uploader) {
+          const result = await this.uploader(file);
+          this.image = result.image;
+          this.$emit('upload', result);
+        } else {
+          this.image = URL.createObjectURL(file);
+        }
+      } catch (err) {
+        this.$emit('error', err);
+        this.$refs.inputFile.value = null;
       }
-    } catch (err) {
-      this.$emit('error', err);
-      this.$refs.inputFile.value = null;
-    }
-    this.isLoading = false;
-  },
+      this.isLoading = false;
+    },
 
-  removeImage(event) {
-    if (this.isLoading) return;
-    if (this.image != null) {
-      event.preventDefault();
-      this.$emit('remove');
-      this.image = null;
-      this.$refs.inputFile.value = null;
+    removeImage(event) {
+      if (this.isLoading) return;
+      if (this.image != null) {
+        event.preventDefault();
+        this.$emit('remove');
+        this.image = null;
+        this.$refs.inputFile.value = null;
+      }
     }
+
   }
-
-}
 
 };
 </script>
