@@ -19,8 +19,6 @@
         'form-control_rounded': rounded,
         'form-control_sm': small,
       }"
-      :type="type"
-      :step="valueStep"
       v-bind="$attrs"
       :value="modelValue"
       @[updateEvent]="$emit('update:modelValue', $event.target.value)"
@@ -39,15 +37,6 @@ export default {
   inheritAttrs: false,
 
   props: {
-    type: {
-      type: String,
-      default: 'date',
-    },
-
-    step: {
-      type: Number,
-    },
-
     modelValue: {
       type: String
     },
