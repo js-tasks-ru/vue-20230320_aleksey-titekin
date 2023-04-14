@@ -1,9 +1,9 @@
 <template>
-  <UiInput :type="type" 
-    :modelValue="value"
-    @change="valueChange($event)"
-  
-  />
+  <UiInput :type="type" :modelValue="value" @change="valueChange($event)">
+    <template v-for="slotName in Object.keys($slots)" #[slotName]>
+      <slot :name="slotName" />
+    </template>
+  </UiInput>
 </template>
 
 <script>
@@ -11,12 +11,6 @@ import UiInput from './UiInput.vue';
 
 export default {
   name: 'UiInputDate',
-
-  data() {
-    return {
-      date: '',
-    }
-  },
 
   components: { UiInput },
 
@@ -34,16 +28,16 @@ export default {
     },
   },
 
-
   computed: {
     value() {
-      switch(this.type) {
+      const date = (new Date(this.modelValue)).toISOString();
+      switch (this.type) {
         case 'date':
-          return (new Date(this.modelValue)).toISOString().slice(0,10);
+          return date.slice(0, 10);
         case 'time':
-          return (new Date(this.modelValue)).toISOString().slice(11,16);
+          return date.slice(11, 16);
         default:
-          return (new Date(this.modelValue)).toISOString().slice(0,16);
+          return date.slice(0, 16);
       }
     },
   },
