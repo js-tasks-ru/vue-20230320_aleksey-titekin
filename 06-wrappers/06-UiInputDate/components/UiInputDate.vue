@@ -30,6 +30,7 @@ export default {
 
   computed: {
     value() {
+      if (!this.modelValue) return '';
       const date = (new Date(this.modelValue)).toISOString();
       switch (this.type) {
         case 'date':
