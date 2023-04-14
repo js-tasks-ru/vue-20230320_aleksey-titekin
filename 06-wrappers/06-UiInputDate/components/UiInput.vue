@@ -22,7 +22,6 @@
       v-bind="$attrs"
       :value="modelValue"
       @[updateEvent]="$emit('update:modelValue', $event.target.value)"
-   
     />
 
     <div v-if="$slots['right-icon']" class="input-group__icon">
@@ -38,7 +37,7 @@ export default {
 
   props: {
     modelValue: {
-      type: String
+      type: String,
     },
 
     modelModifiers: {
