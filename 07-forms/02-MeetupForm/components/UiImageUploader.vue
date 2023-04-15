@@ -1,18 +1,9 @@
-<!-- STUB: ЭТО ЗАГЛУШКА ДЛЯ РУЧНОГО ТЕСТИРОВАНИЯ -->
-<!-- ВЫ МОЖЕТЕ ИСПОЛЬЗОВАТЬ ПОЛНУЮ ВЕРСИЮ КОМПОНЕНТА, ЕСЛИ УЖЕ РЕАЛИЗОВАЛИ ЕГО -->
-
 <template>
   <div class="image-uploader">
-    <label class="image-uploader__preview" :style="src && `--bg-url: url('${src}')`" @click.stop.prevent="handleClick">
-      <span class="image-uploader__text">{{ src ? 'Удалить' : 'Загрузить изображение' }}</span>
-      <input
-        ref="input"
-        type="file"
-        accept="image/*"
-        class="image-uploader__input"
-        v-bind="$attrs"
-        @change="mockFileSelect"
-      />
+    <label class="image-uploader__preview" :class="{ 'image-uploader__preview-loading': isLoading }" :style="imageLink">
+      <span class="image-uploader__text">{{ status }}</span>
+      <input type="file" accept="image/*" class="image-uploader__input" ref="inputFile" v-bind="$attrs"
+        @change="loadImage($event.target.files[0])" @click="removeImage($event)" />
     </label>
   </div>
 </template>
@@ -20,55 +11,74 @@
 <script>
 export default {
   name: 'UiImageUploader',
-  inheritAttrs: false,
-
-  props: {
-    uploader: {
-      type: Function,
-    },
-
-    preview: {
-      type: String,
-    },
-  },
-
-  emits: ['upload', 'select', 'error', 'remove'],
 
   data() {
     return {
-      src: this.preview,
-    };
+      image: this.preview,
+      isLoading: false,
+    }
+  },
+
+  inheritAttrs: false,
+
+  props: {
+    preview: {
+      type: String,
+      default: null,
+    },
+    uploader: Function,
+  },
+
+  emits: ['select', 'remove', 'error', 'upload'],
+
+  computed: {
+    imageLink() {
+      return this.image ? `--bg-url: url(${this.image})` : null;
+    },
+
+    status() {
+      let result = this.isLoading ? 'Загрузка...' : this.image ? 'Удалить изображение' : 'Загрузить изображение';
+      return result
+    },
   },
 
   methods: {
-    mockFileSelect() {
-      this.src = 'https://course-vue.javascript.ru/api/images/1';
-      const file = new File(['abc'], 'abc.jpeg', {
-        type: 'image/jpeg',
-      });
-      this.$emit('select', this.$refs.input.files[0] || file);
-    },
-
-    mockRemoveFile() {
-      this.src = null;
-      this.$refs.input.value = '';
-      this.$emit('remove');
-    },
-
-    handleClick() {
-      if (this.src && this.src !== this.preview) {
-        this.mockRemoveFile();
-      } else {
-        this.mockFileSelect();
+    async loadImage(file) {
+      if (this.isLoading) return;
+      this.$emit('select', file);
+      try {
+        this.isLoading = true;
+        if (this.uploader) {
+          const result = await this.uploader(file);
+          this.image = result.image;
+          this.$emit('upload', result);
+        } else {
+          this.image = URL.createObjectURL(file);
+        }
+      } catch (err) {
+        this.$emit('error', err);
+        this.$refs.inputFile.value = null;
       }
+      this.isLoading = false;
     },
-  },
+
+    removeImage(event) {
+      if (this.isLoading) return;
+      if (this.image != null) {
+        event.preventDefault();
+        this.$emit('remove');
+        this.image = null;
+        this.$refs.inputFile.value = null;
+      }
+    }
+
+  }
+
 };
 </script>
 
 <style scoped>
-.image-uploader {
-}
+.image-uploader {}
 
 .image-uploader__input {
   opacity: 0;
