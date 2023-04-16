@@ -60,7 +60,7 @@
 </template>
 
 <script>
-import cloneDeep from 'lodash/CloneDeep';
+import { cloneDeep } from 'lodash';
 import MeetupAgendaItemForm from './MeetupAgendaItemForm.vue';
 import UiButton from './UiButton.vue';
 import UiFormGroup from './UiFormGroup.vue';
