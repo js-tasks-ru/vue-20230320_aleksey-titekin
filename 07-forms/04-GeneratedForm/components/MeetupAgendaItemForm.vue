@@ -25,6 +25,7 @@
       <component 
         :is="item.component" 
         :name="item.props.name" 
+        :title="item.props.title"
         v-model="localAgendaItem[item.props.name]"
         :multiline="item.props.multiline"
         :options="item.props.options"/>
