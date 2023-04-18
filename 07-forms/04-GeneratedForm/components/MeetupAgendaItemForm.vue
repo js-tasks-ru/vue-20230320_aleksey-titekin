@@ -21,14 +21,9 @@
       </div>
     </div>
 
-    <UiFormGroup v-for="(item,index) in Object.values($options.agendaItemFormSchemas[localAgendaItem.type])" :key="index" :label="item.label">
-      <component 
-        :is="item.component" 
-        :name="item.props.name" 
-        :title="item.props.title"
-        v-model="localAgendaItem[item.props.name]"
-        :multiline="item.props.multiline"
-        :options="item.props.options"/>
+    <UiFormGroup v-for="(item, index) in Object.values($options.agendaItemFormSchemas[localAgendaItem.type])" :key="index"
+      :label="item.label">
+      <component :is="item.component" v-model="localAgendaItem[item.props.name]" v-bind="item.props" />
     </UiFormGroup>
   </fieldset>
 </template>
@@ -206,8 +201,6 @@ export default {
       }
     }
   },
-
-
 };
 </script>
 
