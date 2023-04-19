@@ -6,6 +6,7 @@
 </template>
 
 <script>
+import { isReactive } from 'vue';
 import { SensorsDataController } from '../services/SensorsDataController';
 import { SensorsDataStreamingService } from '../services/SensorsDataStreamingService';
 import SensorsDataRow from './SensorsDataRow';
@@ -18,7 +19,7 @@ export default {
   data() {
     return {
       sensors: null,
-    };
+    }
   },
 
   mounted() {
@@ -42,9 +43,16 @@ export default {
     },
 
     setData(sensors) {
-      this.sensors = sensors;
+      if (!this.sensors) { 
+        this.sensors = sensors 
+      } else {
+        Object.entries(sensors).forEach( elem => {
+          this.sensors[elem[0]] = { ...elem[1]};         
+        })
+      }      
     },
   },
+
 };
 </script>
 

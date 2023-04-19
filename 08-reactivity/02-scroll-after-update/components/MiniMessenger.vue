@@ -14,6 +14,8 @@
 </template>
 
 <script>
+import { nextTick } from 'vue';
+
 let lastId = 0;
 
 export default {
@@ -42,7 +44,13 @@ export default {
         text: this.newMessage,
       });
       this.newMessage = '';
+      nextTick(this.needScrooll);
     },
+
+    needScrooll() {
+      this.$refs.items[lastId-1].scrollIntoView();
+    },
+
   },
 };
 </script>

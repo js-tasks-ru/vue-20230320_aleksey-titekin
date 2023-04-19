@@ -9,6 +9,17 @@ import debounce from 'lodash/debounce';
  */
 export function debouncedRef(source, wait) {
   const debounced = ref(undefined); // ...
-  // ...
+  debounced.value = source.value;
+  
+  /*
+  watch(
+    source,
+    () => {
+      setTimeout(() => {
+        debounced.value = source.value
+      }, wait)
+    }
+  )
+  */
   return debounced;
 }
