@@ -1,5 +1,5 @@
 <script>
-// import { compile } from 'vue';
+import { compile, defineAsyncComponent  } from 'vue';
 
 export default {
   name: 'TemplateRenderer',
@@ -20,5 +20,11 @@ export default {
       default: () => [],
     },
   },
+
+  render(...args) {
+    console.log(args)
+    return compile(this.template).apply(this, args)
+  },
+
 };
 </script>
