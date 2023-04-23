@@ -1,5 +1,5 @@
 <script>
-import { h, compile, defineAsyncComponent  } from 'vue';
+import { compile } from 'vue';
 
 export default {
   name: 'TemplateRenderer',
@@ -21,21 +21,15 @@ export default {
     },
   },
 
+  components: {},
 
   beforeMount() {
-    //this.$options.components = this.components;
-    this.$options.bindings = this.bindings;
+    Object.assign(this.$options.components, this.components);
   },
 
   render(...args) {
-    //this.$options.components = this.components;
-    //this.$options.bindings = this.bindings;
-    //const renderFunction = compile(this.template);
-
     return compile(this.template).apply(this, args)
-    //return renderFunction.apply(this, args)
   },
-  
 
 };
 </script>
