@@ -1,5 +1,5 @@
 <script>
-// import { compile } from 'vue';
+import { compile } from 'vue';
 
 export default {
   name: 'TemplateRenderer',
@@ -20,5 +20,16 @@ export default {
       default: () => [],
     },
   },
+
+  components: {},
+
+  beforeMount() {
+    Object.assign(this.$options.components, this.components);
+  },
+
+  render(...args) {
+    return compile(this.template).apply(this, args)
+  },
+
 };
 </script>
