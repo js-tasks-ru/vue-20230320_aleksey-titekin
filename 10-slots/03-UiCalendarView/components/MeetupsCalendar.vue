@@ -1,5 +1,7 @@
 <template>
+  <!--Получить данные за месяц-->
   <UiCalendarView>
+    <!--Цикл по кол-ву элементов-->
     <UiCalendarEvent v-if="meetups[0]" tag="a" :href="`/meetups/${meetups[0].id}`">
       {{ meetups[0].title }}
     </UiCalendarEvent>
