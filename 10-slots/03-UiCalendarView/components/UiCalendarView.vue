@@ -1,4 +1,4 @@
-<template>
+<template> 
   <div class="calendar-view">
     <div class="calendar-view__controls">
       <div class="calendar-view__controls-inner">
@@ -212,16 +212,13 @@
 export default {
   name: 'MeetupsCalendar',
 
-  data() {
-    return {
-      currentMonth: new Date(),
-    }
-  },
+  emits: ['newMonth'],
 
-
-  created() {
-    const date = new Date();
-    this.currentMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+  props: {
+    currentMonth: {
+      type: Date,
+      default: new Date(),
+    },
   },
 
   computed: {
@@ -280,11 +277,13 @@ export default {
 
   methods: {
     onClickPrevMonth() {
-      this.currentMonth = new Date(this.currentMonth.setMonth(this.currentMonth.getMonth() - 1));
+      const  newMonth =new Date(this.currentMonth.setMonth(this.currentMonth.getMonth() - 1));
+      this.$emit('newMonth', Date.parse(newMonth))
     },
 
     onClickNextMonth() {
-      this.currentMonth = new Date(this.currentMonth.setMonth(this.currentMonth.getMonth() + 1));
+      const  newMonth =new Date(this.currentMonth.setMonth(this.currentMonth.getMonth() + 1));
+      this.$emit('newMonth', Date.parse(newMonth))
     },
   }
 };

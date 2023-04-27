@@ -1,9 +1,7 @@
-<template>
-  <!--Получить данные за месяц-->
-  <UiCalendarView>
-    <!--Цикл по кол-ву элементов-->
-    <UiCalendarEvent v-if="meetups[0]" tag="a" :href="`/meetups/${meetups[0].id}`">
-      {{ meetups[0].title }}
+<template> 
+  <UiCalendarView v-slot="{ date }" :currentMonth="currentMonth" @newMonth="newCurrentMonth($event)">
+    <UiCalendarEvent v-for="meetup in getMeetups(date)" :key="meetup.id"  tag="a" :href="`/meetups/${meetup.id}`">
+      {{ meetup.title }}
     </UiCalendarEvent>
   </UiCalendarView>
 </template>
@@ -20,12 +18,49 @@ export default {
     UiCalendarView,
   },
 
+  data() {
+    return {
+      currentMonth: null,
+    }
+  },
+
+  created() {
+    const date = new Date();
+    this.currentMonth = (new Date(date.getFullYear(), date.getMonth(), 1));
+  },
+
   props: {
     meetups: {
       type: Array,
       required: true,
     },
   },
+
+  computed: {
+    monthMeetups() {
+       return this.meetups.filter(item => {
+        const meetDate = new Date(item.date);
+        return meetDate.getMonth() === this.currentMonth.getMonth()
+            && meetDate.getFullYear() === this.currentMonth.getFullYear()
+      })
+    }
+  },
+
+  methods: {
+    getMeetups(date) {
+      const curDate = new Date(date);
+      return this.monthMeetups.filter(item => {
+        const meetDate = new Date(item.date);
+        return meetDate.getDate() === curDate.getDate()
+      })
+    },
+
+    newCurrentMonth(event) {
+      this.currentMonth = new Date(event);
+    }
+  },
+
+
 };
 </script>
 

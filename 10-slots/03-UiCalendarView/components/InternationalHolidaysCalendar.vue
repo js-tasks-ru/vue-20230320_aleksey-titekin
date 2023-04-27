@@ -1,6 +1,6 @@
 <template>
-  <UiCalendarView>
-    <div v-for="holiday in internationalHolidaysMap[0][7]" :key="holiday" class="holiday">
+  <UiCalendarView v-slot="{ date }" :currentMonth="currentMonth" @newMonth="newCurrentMonth($event)">
+    <div v-for="holiday in internationalHolidaysMap[Month(date)][Day(date)]" :key="holiday" class="holiday">
       {{ holiday }}
     </div>
   </UiCalendarView>
@@ -18,6 +18,7 @@ export default {
 
   data() {
     return {
+      currentMonth: null,
       // Data from: https://www.timeanddate.com/holidays/world/
       internationalHolidays: [
         { date: 7, month: 1, holiday: "International Programmers' Day" },
@@ -60,6 +61,11 @@ export default {
     };
   },
 
+  created() {
+    const date = new Date();
+    this.currentMonth = (new Date(date.getFullYear(), date.getMonth(), 1));
+  },
+
   computed: {
     // Для удобства можно создать вычисляемое свойство, которое приводит массив с данными к удобному виду
     // Например, здесь создаётся массив 12 объектов (по одному на каждый месяц от 0 до 11)
@@ -76,6 +82,23 @@ export default {
       }
       return result;
     },
+  },
+
+  methods: {
+    newCurrentMonth(event) {
+      this.currentMonth = new Date(event);
+    },
+
+    Day(date) {
+      const cDate = new Date(date);
+      return cDate.getDate();
+    },
+
+    Month(date) {
+      const cDate = new Date(date);
+      return cDate.getMonth();
+    }
+
   },
 };
 </script>
