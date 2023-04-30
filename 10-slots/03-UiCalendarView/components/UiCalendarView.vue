@@ -1,13 +1,22 @@
-<template>
+<template> 
   <div class="calendar-view">
     <div class="calendar-view__controls">
       <div class="calendar-view__controls-inner">
-        <button class="calendar-view__control-left" type="button" aria-label="Previous month"></button>
-        <div class="calendar-view__date">Январь 2023 г.</div>
-        <button class="calendar-view__control-right" type="button" aria-label="Next month"></button>
+        <button class="calendar-view__control-left" type="button" aria-label="Previous month" @click="onClickPrevMonth"></button>
+        <div class="calendar-view__date">{{ currentMonthFormatted }}</div>
+        <button class="calendar-view__control-right" type="button" aria-label="Next month" @click="onClickNextMonth"></button>
       </div>
     </div>
+    <div class="calendar-view__grid">
+      <div  v-for="day in arrayDays" :key="day.id" class="calendar-view__cell" :class="{'calendar-view__cell_inactive': !day.isCurrentMonth}" tabindex="0">
+        <div class="calendar-view__cell-day">{{ day.day }}</div>
+        <div class="calendar-view__cell-content">
+          <slot :date="day.date"/> 
+        </div>
+      </div>
+    </div>    
 
+    <!--
     <div class="calendar-view__grid">
       <div class="calendar-view__cell calendar-view__cell_inactive" tabindex="0">
         <div class="calendar-view__cell-day">26</div>
@@ -33,7 +42,10 @@
         <div class="calendar-view__cell-day">1</div>
         <div class="calendar-view__cell-content"></div>
       </div>
-      <!-- -->
+      
+
+
+
       <div class="calendar-view__cell" tabindex="0">
         <div class="calendar-view__cell-day">2</div>
         <div class="calendar-view__cell-content"></div>
@@ -64,7 +76,10 @@
         <div class="calendar-view__cell-day">8</div>
         <div class="calendar-view__cell-content"></div>
       </div>
-      <!-- -->
+      
+
+
+
       <div class="calendar-view__cell" tabindex="0">
         <div class="calendar-view__cell-day">9</div>
         <div class="calendar-view__cell-content"></div>
@@ -93,7 +108,9 @@
         <div class="calendar-view__cell-day">15</div>
         <div class="calendar-view__cell-content"></div>
       </div>
-      <!-- -->
+      
+
+
       <div class="calendar-view__cell" tabindex="0">
         <div class="calendar-view__cell-day">16</div>
         <div class="calendar-view__cell-content"></div>
@@ -122,7 +139,10 @@
         <div class="calendar-view__cell-day">22</div>
         <div class="calendar-view__cell-content"></div>
       </div>
-      <!-- -->
+      
+
+
+
       <div class="calendar-view__cell" tabindex="0">
         <div class="calendar-view__cell-day">23</div>
         <div class="calendar-view__cell-content"></div>
@@ -151,7 +171,10 @@
         <div class="calendar-view__cell-day">29</div>
         <div class="calendar-view__cell-content"></div>
       </div>
-      <!-- -->
+      
+
+
+
       <div class="calendar-view__cell" tabindex="0">
         <div class="calendar-view__cell-day">30</div>
         <div class="calendar-view__cell-content"></div>
@@ -181,18 +204,93 @@
         <div class="calendar-view__cell-content"></div>
       </div>
     </div>
+    -->
   </div>
 </template>
 
 <script>
 export default {
   name: 'MeetupsCalendar',
+
+  emits: ['newMonth'],
+
+  props: {
+    currentMonth: {
+      type: Date,
+      default: new Date(),
+    },
+  },
+
+  computed: {
+    currentMonthFormatted() {
+      return this.currentMonth.toLocaleDateString(navigator.language, {
+        month: 'long',
+        year: 'numeric',
+      })
+    },
+    arrayDays() {
+      const arrDays = [];
+      let id = 0;
+      
+      const firstDay = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth(), 1);
+      const lastDay = new Date(firstDay.getFullYear(), firstDay.getMonth() + 1, 0);
+
+      let date = new Date(firstDay);
+      
+      while (date <= lastDay) {
+        id++;
+        arrDays.push({
+          'id':id, 
+          'day': date.getDate(), 
+          'date': Date.parse(date), 
+          'isCurrentMonth': true, 
+        });
+        date.setDate(date.getDate() + 1);
+      }
+
+      while (date.getDay() != 1 ) {
+        id++;
+        arrDays.push({
+          'id':id, 
+          'day': date.getDate(), 
+          'date': Date.parse(date), 
+          'isCurrentMonth': false,
+        });
+        date.setDate(date.getDate() + 1);
+      }
+ 
+      date = new Date(firstDay);
+      while (date.getDay() != 1 ) {
+        id++;
+        date.setDate(date.getDate() - 1); 
+        arrDays.unshift({
+          'id':id, 
+          'day': date.getDate(), 
+          'date': Date.parse(date), 
+          'isCurrentMonth': false,
+        });
+      }
+  
+      return arrDays;
+    },
+  },
+
+  methods: {
+    onClickPrevMonth() {
+      const  newMonth =new Date(this.currentMonth.setMonth(this.currentMonth.getMonth() - 1));
+      this.$emit('newMonth', Date.parse(newMonth))
+    },
+
+    onClickNextMonth() {
+      const  newMonth =new Date(this.currentMonth.setMonth(this.currentMonth.getMonth() + 1));
+      this.$emit('newMonth', Date.parse(newMonth))
+    },
+  }
 };
 </script>
 
 <style scoped>
-.calendar-view {
-}
+.calendar-view {}
 
 .calendar-view__controls {
   text-align: center;

@@ -1,5 +1,8 @@
 <template>
-  <button class="button-group__button button-group__button_active" type="button" aria-selected="false">Button</button>
+  <button class="button-group__button" :class="{ 'button-group__button_active': isSelected }" type="button"
+    :aria-selected="isSelected" @click="select(value)">
+    <slot />
+  </button>
 </template>
 
 <script>
@@ -11,6 +14,16 @@ export default {
       required: true,
     },
   },
+
+  inject: ['selected', 'select'],
+
+  computed: {
+    isSelected() {
+      return this.value === this.selected.value
+    }
+  },
+
+
 };
 </script>
 
