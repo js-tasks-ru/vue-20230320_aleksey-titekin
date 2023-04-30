@@ -1,6 +1,6 @@
 <template>
   <button class="button-group__button" :class="{ 'button-group__button_active': selected }" type="button"
-    area-selected="selected" @click="$parent.select(value)">
+    :area-selected="selected" @click="$parent.select(value)">
     <slot />
   </button>
 </template>
