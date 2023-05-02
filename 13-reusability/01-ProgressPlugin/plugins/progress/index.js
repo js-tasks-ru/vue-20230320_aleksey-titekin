@@ -10,6 +10,7 @@ export function useProgress() {
 }
 
 export function createProgress({ container, router } = {}) {
+
   const addDefaultContainer = () => document.body.appendChild(document.createElement('div'));
   const progressInstance = createApp(TheTopProgressBar).mount(container ?? addDefaultContainer());
 
@@ -32,4 +33,5 @@ export function createProgress({ container, router } = {}) {
   }
 
   return progress;
+
 }
